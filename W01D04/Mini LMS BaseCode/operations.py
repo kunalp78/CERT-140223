@@ -166,7 +166,23 @@ def Read_Student(student_json_file,Mobile_Number):
 def Update_Student(student_json_file,Mobile_Number,detail_to_be_updated,new_detail):
     '''Update Student | Update the details of a student based on Mobile Number'''
     '''Write your code below'''
-#this
+    f=open(student_json_file, "r+")
+    content=json.load(f)
+    for i in range(len(content)):
+        if content[i]["Mobile Number"]==Mobile_Number:
+            try:
+                content[i][detail_to_be_updated]
+            except KeyError:
+                f.close()
+                return False
+            content[i][detail_to_be_updated]=new_detail
+            f.seek(0)
+            f.truncate()
+            json.dump(content, f)
+            f.close()
+            return True
+    f.close()
+    return False
 
 def Delete_Student(student_json_file,Mobile_no):
     '''Delete the student with the given Mobile_no'''
@@ -176,7 +192,32 @@ def Delete_Student(student_json_file,Mobile_no):
 def Create_Unit(unit_json_file,ID,type_of_unit,title,start_time,end_time,scheduled_date):
     '''Create a Unit || Format of date is YYYY-MM-DD , Format of time is HH:MM:SS'''
     '''Write your code below'''
-#this
+    d={
+        "Unit ID": ID, 
+        "Type": type_of_unit, 
+        "Title": title, 
+        "Scheduled Date": scheduled_date, 
+        "Start Time": start_time, 
+        "End Time": end_time
+    }
+    f=open(unit_json_file, "r+")
+    try:
+        content=json.load(f)
+        if d not in content:
+            content.append(d)
+            f.seek(0)
+            f.truncate()
+            json.dump(content, f)
+            f.close()
+            return True
+    except JSONDecodeError:
+        l=[]
+        l.append(d)
+        json.dump(l, f)
+        f.close()
+        return True
+    f.close()
+    return False
 
 def Read_all_Units(unit_json_file):
     '''View All Units | Return a list of all Units '''
